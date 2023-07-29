@@ -1,3 +1,13 @@
+let playerScore = 0;
+let computerScore = 0;
+
+function stopGame() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach( (button) => {
+        button.disabled = true;
+    })
+}
+
 function getComputerChoice () {
     const choices = ["Rock", "Paper", "Scissors"];
     let compChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -17,37 +27,61 @@ function writeWinner(pS, cS, result) {
 function playRound(playerSelection, computerSelection) {
     let pS = playerSelection.toLowerCase();
     let cS = computerSelection.toLowerCase();
+    let result = "";
+    let winOrLose = "";
     if(pS === cS) {
-            console.log("it's a tie of "+ cS +" !");
-            return ("tie");
+            result = "it's a tie of "+ cS +" !";
+            winOrLose = "tie";
     } else if((pS === "rock" && cS === "scissors") || 
         (pS === "paper" && cS === "rock") ||
         (pS === "scissors" && cS === "paper")) {
-            console.log("You win! " + pS + " beats " + cS);
-            return("win");
+            result = "You win! " + pS + " beats " + cS;
+            winOrLose ="win";
     } else if((cS === "rock" && pS === "scissors") || 
         (cS === "paper" && pS === "rock") ||
         (cS === "scissors" && pS === "paper")) {
-            console.log("You lose! " + cS + " beats " + pS);
-            return("lose");
+            result = "You lose! " + cS + " beats " + pS;
+            winOrLose ="lose";
+    }
+    document.getElementById('result').innerHTML = result;
+    return winOrLose;
+
+}
+
+function game(playerSelection) {
+    let computerSelection = getComputerChoice();
+    currentRoundResult = playRound(playerSelection, computerSelection);
+    if(currentRoundResult === "win") {
+        playerScore +=1;
+    } else if(currentRoundResult === "lose") {
+        computerScore +=1;
+    }
+    scores = playerScore + " - " + computerScore;
+    document.getElementById('scores').innerHTML = scores;
+    if(playerScore == 5) {
+        document.getElementById('winner-announcement').innerHTML = "YOU WIN! CONGRATULATIONS";
+        stopGame();
+    }
+    if(computerScore == 5) {
+        document.getElementById('winner-announcement').innerHTML = "YOU LOSE! NOOB";
+        stopGame();
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    for(let i=0;i<5;i++){
-        let playerSelection = window.prompt("what do you want to play?");
-        let computerSelection = getComputerChoice();
-        currentRoundResult = playRound(playerSelection, computerSelection);
-        if(currentRoundResult === "win") {
-            playerScore +=1;
-        } else if(currentRoundResult === "lose") {
-            computerScore +=1;
-        }
-    }
-    console.log("Player Score: " + playerScore);
-    console.log("Computer Score: " + computerScore);
-}
+const rockButton = document.querySelector('#rock');
+rockButton.addEventListener('click',() => {
+    game("rock");
+    console.log("rock");
+})
 
-game();
+const paperButton = document.querySelector('#paper');
+paperButton.addEventListener('click',() => {
+    game("paper");
+    console.log("paper");
+})
+
+const scissorsButton = document.querySelector('#scissors');
+scissorsButton.addEventListener('click',() => {
+    game("scissors");
+    console.log("scissors");
+})
